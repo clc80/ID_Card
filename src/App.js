@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import sha256 from 'crypto-js/sha256';
 import './App.css';
 
 class App extends Component {
@@ -7,7 +8,11 @@ class App extends Component {
    this.state = {
      error: null,
      isLoaded: false,
-     persons: []
+     persons: [],
+     firstName: "",
+     lastName: "",
+     dob:"",
+     postalCode: ""
    };
  }
 
@@ -18,7 +23,11 @@ class App extends Component {
        (data) => {
          this.setState({
            isLoaded: true,
-           persons: data.results
+           persons: data.results,
+           firstName: data.results[0].name.first,
+           lastName: data.results[0].name.last,
+           dob: data.results[0].dob.date,
+           postalCode: data.results[0].location.postcode
          });
        },
        (error) => {
@@ -31,7 +40,8 @@ class App extends Component {
  }
 
  render() {
-   const { error, isLoaded, persons } = this.state;
+
+   const { error, isLoaded, persons, firstName, lastName, dob, postalCode } = this.state;
    if (error) {
      return <div>Error: {error.message}</div>;
    } else if (!isLoaded) {
@@ -40,26 +50,18 @@ class App extends Component {
      return (
        <main className='card'>
          {persons.map((person, index) => {
-           console.log({person})
+           var encrypted = sha256(firstName + lastName + dob + postalCode, "Secret")
            return (
              <div key={index}>
              <img src={person.picture.large} alt={person.name.first} />
-             <h2 className="name">Name: {person.name.first} {person.name.last}</h2>
-             <p><span className="bold">DOB:</span> {person.dob.date} </p>
-             <p><span className="bold">Postal code:</span> {person.location.postcode}</p>
-             <p><span className="bold">User ID:</span> {person.login.username} </p>
+             <h2 className="name">Name: {firstName} {lastName}</h2>
+             <p><span className="bold">DOB:</span> {dob} </p>
+             <p><span className="bold">Postal code:</span> {postalCode}</p>
+             <p><span className="bold">User ID:</span> {encrypted.toString().substr(0, 20)} </p>
+
            </div>
            );
          })}
-
-         {/* Photo
-
-First name
-Last name
-Date of birth
-Postal code
-User ID*/}
-
        </main>
      );
    }
