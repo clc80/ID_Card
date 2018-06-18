@@ -1,3 +1,19 @@
-.App {
-  text-align: center;
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+img {
+  width: 80%;
+  border: 2px solid #33E3FF;
+}
+.name{
+    color: grey;
+    font-size: 18px;
 }
